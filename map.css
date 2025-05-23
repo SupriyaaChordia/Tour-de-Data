@@ -30,3 +30,24 @@ body {
   stroke: white;
   pointer-events: auto
 }
+
+header {
+  display: flex;
+  gap: 1em;
+  align-items: baseline;
+}
+
+label {
+  margin-left: auto;
+}
+
+#time-display,
+#anytime-label {
+  display: block;
+  margin-top: 0.25em;
+}
+
+#anytime-label {
+  color: #777;
+  font-style: italic;
+}

@@ -89,7 +89,6 @@ map.on('load', async () => {
     .attr('stroke-width', 1) // Circle border thickness
     .attr('opacity', 0.8) // Circle opacity
     .each(function (d) {
-      d3.select(this).select('title').remove();
       // Add <title> for browser tooltips
       d3.select(this)
         .append('title')
@@ -122,44 +121,3 @@ function getCoords(station) {
   return { cx: x, cy: y }; // Return as object for use in SVG attributes
 }
 
-// let trafficData;
-//   try {
-//     const trips = 'https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv';
-
-//     trafficData = await d3.csv(trafficurl);
-
-//     console.log('Loaded Traffic Data:', trafficData); // Log to verify structure
-//   } catch (error) {
-//     console.error('Error loading Traffic:', error); // Handle errors
-//   }
-
-// const departures = d3.rollup(
-//   trafficData,
-//   (v) => v.length,
-//   (d) => d.start_station_id,
-// );
-
-//   stations = stations.map((station) => {
-//   let id = station.short_name;
-//   station.arrivals = arrivals.get(id) ?? 0;
-//   // TODO departures
-//   // TODO totalTraffic
-//   return station;
-// });
-
-// const radiusScale = d3
-//   .scaleSqrt()
-//   .domain([0, d3.max(stations, (d) => d.totalTraffic)])
-//   .range([0, 25]);
-
-// const circles = svg
-//   .selectAll('circle')
-//   // all other previously defined attributes omitted for brevity
-//   .each(function (d) {
-//     // Add <title> for browser tooltips
-//     d3.select(this)
-//       .append('title')
-//       .text(
-//         `${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`,
-//       );
-//   });
