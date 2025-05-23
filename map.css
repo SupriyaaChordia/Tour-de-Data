@@ -44,7 +44,7 @@ body {
 /* Time slider header */
 header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between; 
   gap: 1em;
   align-items: baseline;
   width: 100%;
