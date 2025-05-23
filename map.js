@@ -130,7 +130,7 @@ function formatTime(minutes) {
   return date.toLocaleString('en-US', { timeStyle: 'short' }); // Format as HH:MM AM/PM
 }
 
-let timeFilter = -1;
+let timeFilter;
 function updateTimeDisplay() {
   timeFilter = Number(timeSlider.value); // Get slider value
 
