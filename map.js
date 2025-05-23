@@ -121,9 +121,9 @@ function getCoords(station) {
   return { cx: x, cy: y }; // Return as object for use in SVG attributes
 }
 
-const timeSlider = document.getElementById('#time-slider');
-const selectedTime = document.getElementById('#selected-time');
-const anyTimeLabel = document.getElementById('#any-time');
+const timeSlider = document.getElementById('time-slider');
+const selectedTime = document.getElementById('time-display');
+const anyTimeLabel = document.getElementById('anytime-label');
 
 function formatTime(minutes) {
   const date = new Date(0, 0, 0, 0, minutes); // Set hours & minutes
