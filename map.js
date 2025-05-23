@@ -178,9 +178,6 @@ function updateScatterPlot(timeFilter) {
     .attr('r', (d) => radiusScale(d.totalTraffic)); // Update circle sizes
 }
 
-timeSlider.addEventListener('input', updateTimeDisplay);
-updateTimeDisplay();
-
 function computeStationTraffic(stations, trips) {
   // Compute departures
   const departures = d3.rollup(
@@ -225,3 +222,6 @@ function filterTripsbyTime(trips, timeFilter) {
         );
       });
 }
+
+timeSlider.addEventListener('input', updateTimeDisplay);
+updateTimeDisplay();
