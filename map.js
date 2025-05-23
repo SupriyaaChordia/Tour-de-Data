@@ -51,11 +51,21 @@ map.on('load', async () => {
     .data(stations)
     .enter()
     .append('circle')
-    .attr('r', 5) // Radius of the circle
+    .attr('r', d => radiusScale(d.totalTraffic)) // Radius of the circle
     .attr('fill', 'steelblue') // Circle fill color
     .attr('stroke', 'white') // Circle border color
     .attr('stroke-width', 1) // Circle border thickness
-    .attr('opacity', 0.8); // Circle opacity
+    .attr('opacity', 0.8) // Circle opacity
+    .selectAll('circle')
+    // all other previously defined attributes omitted for brevity
+    .each(function (d) {
+      // Add <title> for browser tooltips
+      d3.select(this)
+        .append('title')
+        .text(
+          `${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`,
+        );
+    });
 
     // Function to update circle positions when the map moves/zooms
   function updatePositions() {
@@ -78,13 +88,13 @@ map.on('load', async () => {
   const departures = d3.rollup(
   trips,
   (v) => v.length,
-  (d) => d.start_station_id,
+  (d) => d.start_station_id
   );
 
   const arrivals = d3.rollup(
   trips,
   (v) => v.length,
-  (d) => d.end_station_id,
+  (d) => d.end_station_id
   )
 
   stations = stations.map((station) => {
@@ -94,7 +104,6 @@ map.on('load', async () => {
   station.totalTraffic = station.departures + station.arrivals;
   return station;
 });
-});
 const radiusScale = d3
   .scaleSqrt()
   .domain([0, d3.max(stations, (d) => d.totalTraffic)])
@@ -102,14 +111,15 @@ const radiusScale = d3
   d => radiusScale(d.totalTraffic)
 
 console.log(stations);
+});
 
 
 
-// function getCoords(station) {
-//   const point = new mapboxgl.LngLat(+station.lon, +station.lat); // Convert lon/lat to Mapbox LngLat
-//   const { x, y } = map.project(point); // Project to pixel coordinates
-//   return { cx: x, cy: y }; // Return as object for use in SVG attributes
-// }
+function getCoords(station) {
+  const point = new mapboxgl.LngLat(+station.lon, +station.lat); // Convert lon/lat to Mapbox LngLat
+  const { x, y } = map.project(point); // Project to pixel coordinates
+  return { cx: x, cy: y }; // Return as object for use in SVG attributes
+}
 
 // let trafficData;
 //   try {
