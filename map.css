@@ -5,15 +5,16 @@ body {
   height: 100%;
   width: 100%;
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+  flex-direction: column; /* allow stacking header, legend, map */
+  align-items: center;
 }
 
 #map {
-  width: 100%; /* Adjust width to your desired size */
-  height: 100%; /* Adjust height to your desired size */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for effect */
-  border-radius: 8px; /* Optional: rounded corners */
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  position: relative;
 }
 
 #map svg {
@@ -24,20 +25,34 @@ body {
   pointer-events: none;
 }
 
-#map svg circle{
+#map svg circle,
+.legend > div {
   fill: steelblue;
   fill-opacity: 60%;
   stroke: white;
-  pointer-events: auto
+  pointer-events: auto;
+  --color-departures: steelblue;
+  --color-arrivals: darkorange;
+  --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+  );
+  fill: var(--color);
 }
 
+/* Time slider header */
 header {
   display: flex;
   justify-content: flex-end;
   gap: 1em;
   align-items: baseline;
+  width: 100%;
+  max-width: 1200px;
+  padding: 1em;
 }
 
+/* Time display formatting */
 #time-display,
 #anytime-label {
   display: block;
@@ -47,4 +62,33 @@ header {
 #anytime-label {
   color: grey;
   font-style: italic;
+}
+
+/* LEGEND: Design 2 (swatch + label) */
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 2em;
+  margin: 1em auto;
+  font-size: 0.9em;
+}
+
+.legend > span {
+  font-weight: bold;
+}
+
+.legend > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.legend > div::before {
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background: var(--color);
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px #0002;
 }
