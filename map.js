@@ -97,7 +97,7 @@ map.on('load', async () => {
         );
     });
 
-    // Function to update circle positions when the map moves/zooms
+  // Function to update circle positions when the map moves/zooms
   function updatePositions() {
     circles
       .attr('cx', (d) => getCoords(d).cx) // Set the x-position using projected coordinates
