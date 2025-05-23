@@ -93,6 +93,7 @@ map.on('load', async () => {
   station.totalTraffic = station.departures + station.arrivals;
   return station;
 });
+});
 
 console.log(stations);
 
