@@ -44,10 +44,9 @@ label {
 #time-display,
 #anytime-label {
   display: block;
-  margin-top: 0.25em;
 }
 
 #anytime-label {
-  color: #777;
+  color: grey;
   font-style: italic;
 }
