@@ -18,7 +18,11 @@ const map = new mapboxgl.Map({
 
 const svg = d3.select('#map').select('svg');
 
-let trips; // Initialize trips variable
+let trips;
+let stations;
+let circles;
+let radiusScale;
+
 
 map.on('load', async () => {
   map.addSource('boston_route', {
@@ -69,7 +73,7 @@ map.on('load', async () => {
   // (d) => d.end_station_id
   // )
 
-  const stations = computeStationTraffic(jsonData.data.stations, trips);
+  stations = computeStationTraffic(jsonData.data.stations, trips);
 
 
   // stations = stations.map((station) => {
@@ -84,13 +88,13 @@ map.on('load', async () => {
 
   console.log('Stations Array:', stations);
 
-  const radiusScale = d3
+  radiusScale = d3
   .scaleSqrt()
   .domain([0, d3.max(stations, (d) => d.totalTraffic)])
   .range([0, 25]);
 
   // Append circles to the SVG for each station
-  const circles = svg
+  circles = svg
     .selectAll('circle')
     .data(stations, (d) => d.short_name)
     .enter()
