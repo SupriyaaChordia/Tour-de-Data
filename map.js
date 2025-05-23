@@ -68,6 +68,8 @@ map.on('load', async () => {
   return station;
   });
 
+  console.log(stations);
+
   console.log('Stations Array:', stations);
 
   const radiusScale = d3
@@ -112,10 +114,6 @@ map.on('load', async () => {
   map.on('moveend', updatePositions); // Final adjustment after movement ends
 
 });
-
-console.log(stations);
-
-
 
 function getCoords(station) {
   const point = new mapboxgl.LngLat(+station.lon, +station.lat); // Convert lon/lat to Mapbox LngLat
