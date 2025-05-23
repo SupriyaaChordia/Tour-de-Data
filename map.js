@@ -18,6 +18,8 @@ const map = new mapboxgl.Map({
 
 const svg = d3.select('#map').select('svg');
 
+let trips; // Initialize trips variable
+
 map.on('load', async () => {
   map.addSource('boston_route', {
   type: 'geojson',
@@ -44,7 +46,7 @@ map.on('load', async () => {
     console.error('Error loading JSON:', error); // Handle errors
   }
 
-  let trips = await d3.csv(
+  trips = await d3.csv(
   'https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv',
   (trip) => {
     trip.started_at = new Date(trip.started_at);
