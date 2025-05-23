@@ -34,7 +34,7 @@ body {
 header {
   display: flex;
   gap: 1em;
-  align-items: baseline;
+  align-items: right;
 }
 
 label {
