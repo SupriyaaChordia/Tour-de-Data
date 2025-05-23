@@ -43,8 +43,38 @@ map.on('load', async () => {
   } catch (error) {
     console.error('Error loading JSON:', error); // Handle errors
   }
+
   let stations = jsonData.data.stations;
+
+  const trips = await d3.csv('https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv');
+
+  const departures = d3.rollup(
+  trips,
+  (v) => v.length,
+  (d) => d.start_station_id
+  );
+
+  const arrivals = d3.rollup(
+  trips,
+  (v) => v.length,
+  (d) => d.end_station_id
+  )
+
+  stations = stations.map((station) => {
+  let id = station.short_name;
+  station.arrivals = arrivals.get(id) ?? 0;
+  station.departures = departures.get(id) ?? 0;
+  station.totalTraffic = station.departures + station.arrivals;
+  return station;
+  });
+
   console.log('Stations Array:', stations);
+
+  const radiusScale = d3
+  .scaleSqrt()
+  .domain([0, d3.max(stations, (d) => d.totalTraffic)])
+  .range([0, 25]);
+
   // Append circles to the SVG for each station
   const circles = svg
     .selectAll('circle')
@@ -56,8 +86,6 @@ map.on('load', async () => {
     .attr('stroke', 'white') // Circle border color
     .attr('stroke-width', 1) // Circle border thickness
     .attr('opacity', 0.8) // Circle opacity
-    .selectAll('circle')
-    // all other previously defined attributes omitted for brevity
     .each(function (d) {
       // Add <title> for browser tooltips
       d3.select(this)
@@ -83,35 +111,9 @@ map.on('load', async () => {
   map.on('resize', updatePositions); // Update on window resize
   map.on('moveend', updatePositions); // Final adjustment after movement ends
 
-  const trips = await d3.csv('https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv');
-
-  const departures = d3.rollup(
-  trips,
-  (v) => v.length,
-  (d) => d.start_station_id
-  );
-
-  const arrivals = d3.rollup(
-  trips,
-  (v) => v.length,
-  (d) => d.end_station_id
-  )
-
-  stations = stations.map((station) => {
-  let id = station.short_name;
-  station.arrivals = arrivals.get(id) ?? 0;
-  station.departures = departures.get(id) ?? 0;
-  station.totalTraffic = station.departures + station.arrivals;
-  return station;
 });
-const radiusScale = d3
-  .scaleSqrt()
-  .domain([0, d3.max(stations, (d) => d.totalTraffic)])
-  .range([0, 25]);
-  d => radiusScale(d.totalTraffic)
 
 console.log(stations);
-});
 
 
 
