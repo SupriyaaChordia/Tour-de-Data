@@ -16,6 +16,8 @@ const map = new mapboxgl.Map({
   maxZoom: 18, // Maximum allowed zoom
 });
 
+const svg = d3.select('#map').select('svg');
+
 map.on('load', async () => {
   map.addSource('boston_route', {
   type: 'geojson',
@@ -71,13 +73,75 @@ map.on('load', async () => {
   map.on('resize', updatePositions); // Update on window resize
   map.on('moveend', updatePositions); // Final adjustment after movement ends
 
+  const trips = await d3.csv('https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv');
+
+  const departures = d3.rollup(
+  trips,
+  (v) => v.length,
+  (d) => d.start_station_id,
+  );
+
+  const arrivals = d3.rollup(
+  trips,
+  (v) => v.length,
+  (d) => d.end_station_id,)
+
+  stations = stations.map((station) => {
+  let id = station.short_name;
+  station.arrivals = arrivals.get(id) ?? 0;
+  station.departures = arrivals.get(id) ?? 0;
+  station.totalTraffic = station.departures + station.arrivals;
+  return station;
 });
 
-const svg = d3.select('#map').select('svg');
+console.log(stations);
 
-function getCoords(station) {
-  const point = new mapboxgl.LngLat(+station.lon, +station.lat); // Convert lon/lat to Mapbox LngLat
-  const { x, y } = map.project(point); // Project to pixel coordinates
-  return { cx: x, cy: y }; // Return as object for use in SVG attributes
-}
 
+
+// function getCoords(station) {
+//   const point = new mapboxgl.LngLat(+station.lon, +station.lat); // Convert lon/lat to Mapbox LngLat
+//   const { x, y } = map.project(point); // Project to pixel coordinates
+//   return { cx: x, cy: y }; // Return as object for use in SVG attributes
+// }
+
+// let trafficData;
+//   try {
+//     const trips = 'https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv';
+
+//     trafficData = await d3.csv(trafficurl);
+
+//     console.log('Loaded Traffic Data:', trafficData); // Log to verify structure
+//   } catch (error) {
+//     console.error('Error loading Traffic:', error); // Handle errors
+//   }
+
+// const departures = d3.rollup(
+//   trafficData,
+//   (v) => v.length,
+//   (d) => d.start_station_id,
+// );
+
+//   stations = stations.map((station) => {
+//   let id = station.short_name;
+//   station.arrivals = arrivals.get(id) ?? 0;
+//   // TODO departures
+//   // TODO totalTraffic
+//   return station;
+// });
+
+// const radiusScale = d3
+//   .scaleSqrt()
+//   .domain([0, d3.max(stations, (d) => d.totalTraffic)])
+//   .range([0, 25]);
+
+// const circles = svg
+//   .selectAll('circle')
+//   // all other previously defined attributes omitted for brevity
+//   .each(function (d) {
+//     // Add <title> for browser tooltips
+//     d3.select(this)
+//       .append('title')
+//       .text(
+//         `${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`,
+//       );
+//   });
