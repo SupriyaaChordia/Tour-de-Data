@@ -44,8 +44,6 @@ map.on('load', async () => {
     console.error('Error loading JSON:', error); // Handle errors
   }
 
-  const stations = computeStationTraffic(jsonData.data.stations, trips);
-
   let trips = await d3.csv(
   'https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv',
   (trip) => {
@@ -57,25 +55,28 @@ map.on('load', async () => {
 
   // const trips = await d3.csv('https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv');
 
-  const departures = d3.rollup(
-  trips,
-  (v) => v.length,
-  (d) => d.start_station_id
-  );
+  // const departures = d3.rollup(
+  // trips,
+  // (v) => v.length,
+  // (d) => d.start_station_id
+  // );
 
-  const arrivals = d3.rollup(
-  trips,
-  (v) => v.length,
-  (d) => d.end_station_id
-  )
+  // const arrivals = d3.rollup(
+  // trips,
+  // (v) => v.length,
+  // (d) => d.end_station_id
+  // )
 
-  stations = stations.map((station) => {
-  let id = station.short_name;
-  station.arrivals = arrivals.get(id) ?? 0;
-  station.departures = departures.get(id) ?? 0;
-  station.totalTraffic = station.departures + station.arrivals;
-  return station;
-  });
+  const stations = computeStationTraffic(jsonData.data.stations, trips);
+
+
+  // stations = stations.map((station) => {
+  // let id = station.short_name;
+  // station.arrivals = arrivals.get(id) ?? 0;
+  // station.departures = departures.get(id) ?? 0;
+  // station.totalTraffic = station.departures + station.arrivals;
+  // return station;
+  // });
 
   console.log(stations);
 
@@ -89,7 +90,7 @@ map.on('load', async () => {
   // Append circles to the SVG for each station
   const circles = svg
     .selectAll('circle')
-    .data(filteredStations, (d) => d.short_name)
+    .data(stations, (d) => d.short_name)
     .enter()
     .append('circle')
     .attr('r', d => radiusScale(d.totalTraffic)) // Radius of the circle
@@ -141,7 +142,7 @@ function formatTime(minutes) {
 
 let timeFilter;
 function updateTimeDisplay() {
-  let timeFilter = Number(timeSlider.value); // Get slider value
+  timeFilter = Number(timeSlider.value); // Get slider value
 
   if (timeFilter === -1) {
     selectedTime.textContent = ''; // Clear time display
@@ -186,7 +187,7 @@ function computeStationTraffic(stations, trips) {
   const arrivals = d3.rollup(
     trips,
     (v) => v.length,
-    (d) => d.end,
+    (d) => d.end_station_id,
   );
 
   // Update each station..
