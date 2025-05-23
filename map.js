@@ -44,7 +44,7 @@ map.on('load', async () => {
     console.error('Error loading JSON:', error); // Handle errors
   }
 
-  let stations = jsonData.data.stations;
+  const stations = computeStationTraffic(jsonData.data.stations, trips);
 
   const trips = await d3.csv('https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv');
 
@@ -147,3 +147,27 @@ function updateTimeDisplay() {
 
 timeSlider.addEventListener('input', updateTimeDisplay);
 updateTimeDisplay();
+
+function computeStationTraffic(stations, trips) {
+  // Compute departures
+  const departures = d3.rollup(
+    trips,
+    (v) => v.length,
+    (d) => d.start_station_id,
+  );
+
+  // Computed arrivals as you did in step 4.2
+  const arrivals = d3.rollup(
+    trips,
+    (v) => v.length,
+    (d) => d.end,
+  );
+
+  // Update each station..
+  return stations.map((station) => {
+    let id = station.short_name;
+    station.arrivals = arrivals.get(id) ?? 0;
+    // what you updated in step 4.2
+    return station;
+  });
+}
