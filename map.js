@@ -121,3 +121,28 @@ function getCoords(station) {
   return { cx: x, cy: y }; // Return as object for use in SVG attributes
 }
 
+const timeSlider = document.getElementById('#time-slider');
+const selectedTime = document.getElementById('#selected-time');
+const anyTimeLabel = document.getElementById('#any-time');
+
+function formatTime(minutes) {
+  const date = new Date(0, 0, 0, 0, minutes); // Set hours & minutes
+  return date.toLocaleString('en-US', { timeStyle: 'short' }); // Format as HH:MM AM/PM
+}
+
+function updateTimeDisplay() {
+  timeFilter = Number(timeSlider.value); // Get slider value
+
+  if (timeFilter === -1) {
+    selectedTime.textContent = ''; // Clear time display
+    anyTimeLabel.style.display = 'block'; // Show "(any time)"
+  } else {
+    selectedTime.textContent = formatTime(timeFilter); // Display formatted time
+    anyTimeLabel.style.display = 'none'; // Hide "(any time)"
+  }
+
+  // Trigger filtering logic which will be implemented in the next step
+}
+
+timeSlider.addEventListener('input', updateTimeDisplay);
+updateTimeDisplay();
